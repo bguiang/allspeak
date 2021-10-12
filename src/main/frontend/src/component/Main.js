@@ -52,7 +52,7 @@ const Main = () => {
     getAvailableLanguages();
     setClient(
       new Client({
-        brokerURL: "wss://localhost:8080/allspeak", // Use WSS when deploying to Heroku
+        brokerURL: "wss://allspeak.bernardguiang.com/allspeak", // Use WSS when deploying to Heroku. Also need to use the exact domain name
         // brokerURL: "ws://localhost:8080/allspeak", // Use WS when testing locally
         connectHeaders: {},
         debug: function (str) {
