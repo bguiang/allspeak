@@ -52,7 +52,8 @@ const Main = () => {
     getAvailableLanguages();
     setClient(
       new Client({
-        brokerURL: "ws://localhost:8080/allspeak",
+        brokerURL: "wss://localhost:8080/allspeak", // Use WSS when deploying to Heroku
+        // brokerURL: "ws://localhost:8080/allspeak", // Use WS when testing locally
         connectHeaders: {},
         debug: function (str) {
           console.log("STOMP_CLIENT: " + str);
