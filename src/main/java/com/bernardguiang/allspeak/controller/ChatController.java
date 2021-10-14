@@ -66,7 +66,6 @@ public class ChatController {
 					originalContent,
 					Translate.TranslateOption.targetLanguage(destination.getLanguageCode()));
 			chatMessage.setContent(translation.getTranslatedText());
-			
 			template.convertAndSend(destination.getAddress(), chatMessage);
 		}
 	}

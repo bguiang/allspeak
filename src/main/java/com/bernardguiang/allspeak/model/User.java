@@ -1,29 +1,17 @@
 package com.bernardguiang.allspeak.model;
 
-//TODO: use lombok
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class User implements Comparable<User>{
 	private String username;
 	private String sessionId;
 	private String color;
 	
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getSessionId() {
-		return sessionId;
-	}
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
-	}
-	public String getColor() {
-		return color;
-	}
-	public void setColor(String color) {
-		this.color = color;
-	}
 	
 	@Override
 	public int compareTo(User u) {
@@ -32,10 +20,4 @@ public class User implements Comparable<User>{
 	      }
 	    return username.compareTo(u.getUsername());
 	}
-	@Override
-	public String toString() {
-		return "User [username=" + username + ", sessionId=" + sessionId + ", color=" + color + "]";
-	}
-	
-	
 }

@@ -3,37 +3,15 @@ package com.bernardguiang.allspeak.model;
 import java.util.HashSet;
 import java.util.Set;
 
-//TODO: replace with lombok
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Destination {
 	private String address;
-	private Set<String> sessions;
+	private Set<String> sessions = new HashSet<>();
 	private String languageCode;
-	
-	public Destination() {
-		sessions = new HashSet<>();
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public Set<String> getSessions() {
-		return sessions;
-	}
-
-	public void setSessions(Set<String> sessions) {
-		this.sessions = sessions;
-	}
-
-	public String getLanguageCode() {
-		return languageCode;
-	}
-
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
-	}
 }

@@ -12,9 +12,8 @@ public class WebSocketsMessageConfig implements WebSocketMessageBrokerConfigurer
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		//registry.addEndpoint("/allspeak");//.withSockJS();
 		
-		registry.addEndpoint("/allspeak").setAllowedOrigins("http://localhost:3000");//.withSockJS();
+		registry.addEndpoint("/allspeak").setAllowedOrigins("http://localhost:3000");
 		
 		/*
 		 * https://stomp-js.github.io/guide/stompjs/rx-stomp/ng2-stompjs/using-stomp-
@@ -26,7 +25,6 @@ public class WebSocketsMessageConfig implements WebSocketMessageBrokerConfigurer
 		 * protocols. Neither of these allow custom headers to be set during the HTTP
 		 * handshake.
 		 */
-		
 		//registry.addEndpoint("/allspeak").withSockJS();
 	}
 

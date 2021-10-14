@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Container,
   TextField,
@@ -52,8 +52,10 @@ const Main = () => {
     getAvailableLanguages();
     setClient(
       new Client({
-        brokerURL: "wss://allspeak.bernardguiang.com/allspeak", // Use WSS when deploying to Heroku. Also need to use the exact domain name
-        // brokerURL: "ws://localhost:8080/allspeak", // Use WS when testing locally
+        // Use WSS when deploying to Heroku. Also need to use the exact domain name
+        // brokerURL: "wss://allspeak.bernardguiang.com/allspeak",
+        // Use WS when testing locally
+        brokerURL: "ws://localhost:8080/allspeak",
         connectHeaders: {},
         debug: function (str) {
           console.log("STOMP_CLIENT: " + str);
@@ -176,19 +178,34 @@ const Main = () => {
 
   const sendMessage = (event) => {
     event.preventDefault();
-    const chatMessage = {
-      sender: username,
-      content: text,
-      type: "CHAT",
-      time: moment().calendar(),
-    };
-    client.publish({
-      destination: "/app/chat.send",
-      body: JSON.stringify(chatMessage),
-    });
+    if (text) {
+      const chatMessage = {
+        sender: username,
+        content: text,
+        type: "CHAT",
+        time: moment().calendar(),
+      };
+      client.publish({
+        destination: "/app/chat.send",
+        body: JSON.stringify(chatMessage),
+      });
 
-    setText("");
+      setText("");
+    }
   };
+
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef && containerRef.current) {
+      const element = containerRef.current;
+      element.scroll({
+        top: element.scrollHeight,
+        left: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [containerRef, messages]);
 
   const messageList = messages.map((message, index) => (
     <div key={index} style={{ padding: 5 }}>
@@ -241,7 +258,9 @@ const Main = () => {
         <Card classes={classes.mainContainer}>
           <CardContent className={classes.main}>
             <div className={classes.chat}>
-              <div className={classes.chatArea}>{messageList}</div>
+              <div ref={containerRef} className={classes.chatArea}>
+                {messageList}
+              </div>
               <div>
                 <form className={classes.chatEntry} onSubmit={sendMessage}>
                   <TextField
