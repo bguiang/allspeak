@@ -32,14 +32,16 @@ import com.bernardguiang.allspeak.model.User;
 @Service
 public class WebSocketService {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketService.class);
+	private final SimpMessagingTemplate sendingOperations;
+	private Map<String, Destination> destinationMap;
+	private Map<String, User> userMap;
 	
 	@Autowired
-	private SimpMessagingTemplate sendingOperations;
-	
-	private Map<String, Destination> destinationMap = new HashMap<>();
-	
-	private Map<String, User> userMap = new HashMap<>();
+	public WebSocketService(final SimpMessagingTemplate sendingOperations) {
+		this.sendingOperations = sendingOperations;
+		destinationMap = new HashMap<>();
+		userMap = new HashMap<>();
+	}
 	
 	public void addUserSession(String username, String sessionId) {
 		
@@ -84,35 +86,12 @@ public class WebSocketService {
 //		return usernameStored;
 //	}
 	
-	public String generateRandomDarkColorHSL() {
-		Random rand = new Random();
-		int upperbound = 361; // generate a hue value with the range of 0-360
-		int hue = rand.nextInt(upperbound);
-		
-		// lightness is set to 45% to prevent very bright colors from being generated
-		return "hsl(" + hue + ", 100%, 45%)";
-	}
-	
 	public List<Destination> getActiveDestinations() {
 		return new ArrayList<>(destinationMap.values());
 	}
 	
 	public List<UserDTO> getUsers() {
 		return createUserList(userMap.values());
-	}
-	
-	private List<UserDTO> createUserList(Collection<User> usersSet) {
-		List<User> usersListAlphabetical = new ArrayList<>();
-		usersListAlphabetical.addAll(usersSet);
-		Collections.sort(usersListAlphabetical);
-		
-		List<UserDTO> usersListDTO = new ArrayList<>();
-		for(User u : usersListAlphabetical) {
-			System.out.println(u.toString());
-			usersListDTO.add(new UserDTO(u));
-		}
-		
-		return usersListDTO;
 	}
 	
 	@EventListener
@@ -181,5 +160,29 @@ public class WebSocketService {
 				.build();
 		
 		sendingOperations.convertAndSend("/topic/public", chatMessage);
+	}
+	
+	
+	private List<UserDTO> createUserList(Collection<User> usersSet) {
+		List<User> usersListAlphabetical = new ArrayList<>();
+		usersListAlphabetical.addAll(usersSet);
+		Collections.sort(usersListAlphabetical);
+		
+		List<UserDTO> usersListDTO = new ArrayList<>();
+		for(User u : usersListAlphabetical) {
+			System.out.println(u.toString());
+			usersListDTO.add(new UserDTO(u));
+		}
+		
+		return usersListDTO;
+	}
+	
+	private String generateRandomDarkColorHSL() {
+		Random rand = new Random();
+		int upperbound = 361; // generate a hue value with the range of 0-360
+		int hue = rand.nextInt(upperbound);
+		
+		// lightness is set to 45% to prevent very bright colors from being generated
+		return "hsl(" + hue + ", 100%, 45%)";
 	}
 }

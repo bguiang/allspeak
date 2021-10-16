@@ -26,9 +26,6 @@ import com.google.cloud.translate.Translation;
 public class ChatController {
 	
 	@Autowired
-	private SimpMessagingTemplate simpMessagingTemplate;
-	
-	@Autowired
 	private WebSocketService webSocketService;
 	
 	@Autowired
