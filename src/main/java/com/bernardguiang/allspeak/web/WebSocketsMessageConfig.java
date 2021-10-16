@@ -14,9 +14,8 @@ public class WebSocketsMessageConfig implements WebSocketMessageBrokerConfigurer
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		
 		registry.addEndpoint("/allspeak").setAllowedOrigins(
-				"http://localhost:3000", // For Testing With the React Frontend
-				"http://localhost:8080", 
-				"https://localhost:8080");
+				"http://localhost:3000" // For Testing With the React Frontend\
+				);
 		
 		/*
 		 * https://stomp-js.github.io/guide/stompjs/rx-stomp/ng2-stompjs/using-stomp-
