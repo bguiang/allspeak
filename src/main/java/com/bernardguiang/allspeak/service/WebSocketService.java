@@ -130,7 +130,7 @@ public class WebSocketService {
 	}
 	
 	@EventListener
-	public void handleWebSocketDisconnectListenner(final SessionDisconnectEvent event) {
+	public void handleWebSocketDisconnectListener(final SessionDisconnectEvent event) {
 		
 		GenericMessage message = (GenericMessage) event.getMessage();
 		String simpDestination = (String) message.getHeaders().get("simpDestination");
