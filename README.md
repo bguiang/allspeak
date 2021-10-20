@@ -1,5 +1,5 @@
 # AllSpeak
-The AllSpeak webapp is a chat application that auto-translates messages to other languages.
+The AllSpeak webapp is a chat application that auto-translates messages to the user's selected language.
 
 # Live Demo
 [https://allspeak.bernardguiang.com](https://allspeak.bernardguiang.com)
