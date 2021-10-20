@@ -63,6 +63,7 @@ public class ChatController {
 		System.out.println("Destinations: " + activeDestinations.size());
 		System.out.println(activeDestinations.toString());
 		for(Destination destination : activeDestinations) {
+			System.out.println("Translate message to: " + destination.toString());
 			
 			Translation translation = translate.translate(
 					originalContent,
