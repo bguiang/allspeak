@@ -33,13 +33,13 @@ import com.bernardguiang.allspeak.model.User;
 public class WebSocketService {
 	
 	private final SimpMessagingTemplate sendingOperations;
-	private Map<String, Destination> destinationMap;
+	private Map<String, Destination> languageDestinationMap;
 	private Map<String, User> userMap;
 	
 	@Autowired
 	public WebSocketService(final SimpMessagingTemplate sendingOperations) {
 		this.sendingOperations = sendingOperations;
-		destinationMap = new HashMap<>();
+		languageDestinationMap = new HashMap<>();
 		userMap = new HashMap<>();
 	}
 	
@@ -87,7 +87,7 @@ public class WebSocketService {
 //	}
 	
 	public List<Destination> getActiveDestinations() {
-		return new ArrayList<>(destinationMap.values());
+		return new ArrayList<>(languageDestinationMap.values());
 	}
 	
 	public List<UserDTO> getUsers() {
@@ -109,10 +109,10 @@ public class WebSocketService {
 		System.out.println("Session " + simpSessionId + " subscribed to : " + simpDestination);
 		
 		// Exclude "/topic/public" from language destinations
-		if(!simpDestination.equalsIgnoreCase("/topic/public")) {
+		if(!simpDestination.equalsIgnoreCase("/topic/public") && !simpDestination.equalsIgnoreCase("/topic/users")) {
 			System.out.println("Not Public, add destination subscription");
-			if(destinationMap.containsKey(simpDestination)) {
-				Destination destination = destinationMap.get(simpDestination);
+			if(languageDestinationMap.containsKey(simpDestination)) {
+				Destination destination = languageDestinationMap.get(simpDestination);
 				destination.getSessions().add(simpSessionId);
 			}
 			else {
@@ -121,7 +121,7 @@ public class WebSocketService {
 				String language = simpDestination.substring(7); // skip "/topic/"
 				destination.setLanguageCode(language);
 				destination.getSessions().add(simpSessionId);
-				destinationMap.put(simpDestination, destination);
+				languageDestinationMap.put(simpDestination, destination);
 			}
 		}
 		else {
@@ -130,7 +130,7 @@ public class WebSocketService {
 	}
 	
 	@EventListener
-	public void handleWebSocketDisconnectListenner(final SessionDisconnectEvent event) {
+	public void handleWebSocketDisconnectListener(final SessionDisconnectEvent event) {
 		
 		GenericMessage message = (GenericMessage) event.getMessage();
 		String simpDestination = (String) message.getHeaders().get("simpDestination");
@@ -145,13 +145,13 @@ public class WebSocketService {
 		List<UserDTO> usersList = createUserList(userMap.values());
 		sendingOperations.convertAndSend("/topic/users", usersList);
 		
-		if(destinationMap.containsKey(simpDestination)) {
-			Destination destination = destinationMap.get(simpDestination);
+		if(languageDestinationMap.containsKey(simpDestination)) {
+			Destination destination = languageDestinationMap.get(simpDestination);
 			Set<String> sessions = destination.getSessions();
 			sessions.remove((simpSessionId));
 			
 			if(sessions.isEmpty())
-				destinationMap.remove(simpDestination);
+				languageDestinationMap.remove(simpDestination);
 		}
 		
 		final ChatMessage chatMessage = ChatMessage.builder()

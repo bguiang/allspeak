@@ -25,10 +25,7 @@ import com.google.cloud.translate.Translation;
 @Controller
 public class ChatController {
 	
-	@Autowired
 	private WebSocketService webSocketService;
-	
-	@Autowired
 	private SimpMessagingTemplate template;
 	
 	// Requires environment variable "GOOGLE_API_KEY" if using API Key
@@ -36,6 +33,13 @@ public class ChatController {
 	// It depends on your Google Cloud Platform project's authentication setup
 	// https://cloud.google.com/docs/authentication/getting-started
 	private Translate translate = TranslateOptions.getDefaultInstance().getService();
+	
+	@Autowired
+	public ChatController(WebSocketService webSocketService, SimpMessagingTemplate template) {
+		this.webSocketService = webSocketService;
+		this.template = template;
+	}
+	
 	
 	@GetMapping(path = "/languages", produces = "application/json")
 	public @ResponseBody List<Language> getAvailableLanguages() {
@@ -50,14 +54,16 @@ public class ChatController {
 		
 		return webSocketService.getUsers();
 	}
-
-	private void convertAndSendToActiveDestinations(ChatMessage chatMessage) {
+	
+	@MessageMapping("/chat.send")
+	public void sendMessageToActiveDestinations(@Payload final ChatMessage chatMessage) {
 		
 		String originalContent = chatMessage.getContent();
 		List<Destination> activeDestinations = webSocketService.getActiveDestinations();
 		System.out.println("Destinations: " + activeDestinations.size());
 		System.out.println(activeDestinations.toString());
 		for(Destination destination : activeDestinations) {
+			System.out.println("Translate message to: " + destination.toString());
 			
 			Translation translation = translate.translate(
 					originalContent,
@@ -65,11 +71,6 @@ public class ChatController {
 			chatMessage.setContent(translation.getTranslatedText());
 			template.convertAndSend(destination.getAddress(), chatMessage);
 		}
-	}
-	
-	@MessageMapping("/chat.send")
-	public void sendMessage(@Payload final ChatMessage chatMessage) {
-		convertAndSendToActiveDestinations(chatMessage); 
 	}
 	
 	@MessageMapping("/chat.newUser")
@@ -93,7 +94,6 @@ public class ChatController {
 		headerAccessor.getSessionAttributes().put("username", username);
 		chatMessage.setContent(username + " joined");
 		chatMessage.setType(MessageType.CONNECT);
-		chatMessage.setSender(username);
 		
 		return chatMessage;
 	}
